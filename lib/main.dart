@@ -214,29 +214,34 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(
                         height: 24,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.deepPurple),
-                            borderRadius: BorderRadius.circular(24)),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset('images/social-login-gmail-icon.png'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Gmail',
-                                style: TextStyle(
-                                    color: Colors.deepPurple,
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                              )
-                            ]),
-                      ).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
+                      GestureDetector(
+                        onTap: () {
+                          googleSignIn();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.deepPurple),
+                              borderRadius: BorderRadius.circular(24)),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset('images/social-login-gmail-icon.png'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Gmail',
+                                  style: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontFamily:
+                                          GoogleFonts.montserrat().fontFamily,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                )
+                              ]),
+                        ).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
+                      ),
                       SizedBox(
                         height: 24,
                       ),
