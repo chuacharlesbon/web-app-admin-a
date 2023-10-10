@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final googleSignIn = GoogleSignIn(
       clientId:
           '375941392209-9453ptarnjo7kuv7ajdd17s6cgb2jndk.apps.googleusercontent.com',
-      scopes: ['email'],
+      scopes: ['email', 'profile'],
     );
     try {
       return await googleSignIn.signIn();
@@ -85,6 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
       isLoading = true;
     });
     final googleUser = await googleLogin();
+
+    print('This is the google');
+    print(googleUser);
 
     String fullName = googleUser.displayName;
     String firstName = getFirstNameAndLastName(fullName)[0];
