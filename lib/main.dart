@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final googleSignIn = GoogleSignIn(
       clientId:
           '375941392209-9453ptarnjo7kuv7ajdd17s6cgb2jndk.apps.googleusercontent.com',
-      scopes: ['email'],
+      scopes: ['email', 'profile'],
     );
     try {
       return await googleSignIn.signOut();
