@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class MyModal {
   static void genericOnFuncModal({
     required BuildContext ctx,
+    required String message,
   }) {
     showDialog(
       context: ctx,
@@ -24,7 +25,7 @@ class MyModal {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Login successful!",
+                      message,
                       style: TextStyle(
                         fontFamily: GoogleFonts.montserrat().fontFamily,
                         fontWeight: FontWeight.bold,

@@ -89,20 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void loadMobile() {
-    setState(() {
-      isLoading = true;
-    });
-
-    tempTimer = Timer(const Duration(seconds: 2), () {
-      setState(() {
-        isLoading = false;
-      });
-      MyModal.genericOnFuncModal(ctx: context);
-      tempTimer.cancel();
-    });
-  }
-
   void formSubmit() async {
     setState(() {
       isLoading = true;
@@ -110,20 +96,40 @@ class _LoginScreenState extends State<LoginScreen> {
     try{
       final result = await uds.createUser(fullName: currentFullName, mobileNumber: currentMobileNumber, email: "");
       print('This is the result ${result.toString()}');
-      /* // ignore: use_build_context_synchronously
-      MyModal.genericOnFuncModal(ctx: context); */
+      // ignore: use_build_context_synchronously
+      MyModal.genericOnFuncModal(
+        ctx: context,
+        message: result['error'] != null
+          ? 'ERR ${result['error']}'
+          : "Form submitted."
+      );
     } on DioException catch (e) {
       if (e.response != null) {
         debugPrint('Dio error!');
         debugPrint('STATUS: ${e.response?.statusCode}');
         debugPrint('DATA: ${e.response?.data}');
         debugPrint('HEADERS: ${e.response?.headers}');
+        // ignore: use_build_context_synchronously
+        MyModal.genericOnFuncModal(
+          ctx: context,
+          message: 'ERR: ${e.response?.data['error']}'
+        );
       } else {
         debugPrint('Error sending request!');
         debugPrint('ERR ${e.message}');
+        // ignore: use_build_context_synchronously
+        MyModal.genericOnFuncModal(
+          ctx: context,
+          message: 'ERR ${e.message}'
+        );
       }
     } catch (e) {
       debugPrint('ERR ${e.toString()}');
+      // ignore: use_build_context_synchronously
+      MyModal.genericOnFuncModal(
+        ctx: context,
+        message: 'ERR ${e.toString()}'
+      );
     }
     setState(() {
       isLoading = false;
@@ -138,20 +144,40 @@ class _LoginScreenState extends State<LoginScreen> {
     try{
       final result = await uds.createUser(fullName: fullName, mobileNumber: mobileNumber, email: email);
       print('This is the result ${result.toString()}');
-      /* // ignore: use_build_context_synchronously
-      MyModal.genericOnFuncModal(ctx: context); */
+      // ignore: use_build_context_synchronously
+      MyModal.genericOnFuncModal(
+        ctx: context,
+        message: result['error'] != null
+          ? 'ERR ${result['error']}'
+          : "Form submitted."
+      );
     } on DioException catch (e) {
       if (e.response != null) {
         debugPrint('Dio error!');
         debugPrint('STATUS: ${e.response?.statusCode}');
         debugPrint('DATA: ${e.response?.data}');
         debugPrint('HEADERS: ${e.response?.headers}');
+        // ignore: use_build_context_synchronously
+        MyModal.genericOnFuncModal(
+          ctx: context,
+          message: 'ERR: ${e.response?.data['error']}'
+        );
       } else {
         debugPrint('Error sending request!');
         debugPrint('ERR ${e.message}');
+        // ignore: use_build_context_synchronously
+        MyModal.genericOnFuncModal(
+          ctx: context,
+          message: 'ERR ${e.message}'
+        );
       }
     } catch (e) {
       debugPrint('ERR ${e.toString()}');
+      // ignore: use_build_context_synchronously
+      MyModal.genericOnFuncModal(
+        ctx: context,
+        message: 'ERR ${e.toString()}'
+      );
     }
     setState(() {
       isLoading = false;
