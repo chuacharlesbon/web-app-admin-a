@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:captiveportal/components/cp_modal.dart';
+import 'package:captiveportal/components/translations.dart';
 import 'package:captiveportal/datasource/create-user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -202,10 +203,52 @@ class _LoginScreenState extends State<LoginScreen> {
     print(currentFullName);
     print(currentMobileNumber);
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ), */
+      appBar: AppBar(
+        backgroundColor: Colors.white70,
+        elevation: 1,
+        actions: [
+          PopupMenuButton<Language>(
+                  onSelected: (value) {
+                    //GetIt.instance<OkadaThemeModeCubit>().changeLanguage(value);
+                    //context.setLocale(Locale(value.code));
+                  },
+                  iconSize: 32,
+                  constraints:
+                      const BoxConstraints(minWidth: 20, maxWidth: 120),
+                  itemBuilder: (context) => Languages.all
+                      .map(
+                        (language) => PopupMenuItem(
+                          value: language,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image(
+                                image: (language.icon as Image).image,
+                                height: 24,
+                                width: 24,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(language.name)
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  icon: Image(
+                          image: (Languages.all[0].icon as Image).image,
+                          height: 24,
+                          width: 24,
+                        ),
+                  /* icon: state.language != null
+                      ? Image(
+                          image: (state.language!.icon as Image).image,
+                          height: 24,
+                          width: 24,
+                        )
+                      : const Icon(Icons.language), */
+                ),
+        ]
+      ),
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
@@ -228,178 +271,180 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.white,
                       border: Border.all(color: Colors.grey.withOpacity(0.75)),
                       borderRadius: BorderRadius.circular(24)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 24,
-                      ),
-                      TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              currentFullName = value;
-                            });
-                          },
-                          onFieldSubmitted: (value) {
-                            setState(() {
-                              currentFullName = value;
-                            });
-                          },
-                          keyboardType: TextInputType.text,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'^[a-zA-Z ]+$'),
-                            ),
-                          ],
-                          style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                          decoration: InputDecoration(
-                            hintText: 'Enter name',
-                            hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                                borderSide:
-                                    BorderSide(color: Colors.deepPurple)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                                borderSide:
-                                    BorderSide(color: Colors.deepPurple)),
-                          )).animate().fadeIn(delay: 250.ms).slideX(begin: .25),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              currentMobileNumber = value;
-                            });
-                          },
-                          onFieldSubmitted: (value) {
-                            setState(() {
-                              currentMobileNumber = value;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'^[0-9]+$'),
-                            ),
-                          ],
-                          style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                          decoration: InputDecoration(
-                            hintText: 'Mobile number',
-                            hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                                borderSide:
-                                    BorderSide(color: Colors.deepPurple)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                                borderSide:
-                                    BorderSide(color: Colors.deepPurple)),
-                          )).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          formSubmit();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: Colors.deepPurple,
-                              border: Border.all(color: Colors.deepPurple),
-                              borderRadius: BorderRadius.circular(24)),
-                          child: Center(
-                            child: Text(
-                              'Submit',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
-                            )
-                          ),
-                        ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
-                      ),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(15, 0, 32, 0),
-                              child: Divider(
-                                color: Colors.grey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 24,
+                        ),
+                        TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                currentFullName = value;
+                              });
+                            },
+                            onFieldSubmitted: (value) {
+                              setState(() {
+                                currentFullName = value;
+                              });
+                            },
+                            keyboardType: TextInputType.text,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^[a-zA-Z ]+$'),
                               ),
-                            ),
-                          ),
-                          Text(
-                            'Or login with',
-                          ),
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(32, 0, 15, 0),
-                              child: Divider(
-                                color: Colors.grey,
+                            ],
+                            style: TextStyle(
+                                color: Colors.deepPurple,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
+                            decoration: InputDecoration(
+                              hintText: 'Enter name',
+                              hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.deepPurple)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.deepPurple)),
+                            )).animate().fadeIn(delay: 250.ms).slideX(begin: .25),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                currentMobileNumber = value;
+                              });
+                            },
+                            onFieldSubmitted: (value) {
+                              setState(() {
+                                currentMobileNumber = value;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^[0-9]+$'),
                               ),
+                            ],
+                            style: TextStyle(
+                                color: Colors.deepPurple,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
+                            decoration: InputDecoration(
+                              hintText: 'Mobile number',
+                              hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.deepPurple)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide:
+                                      BorderSide(color: Colors.deepPurple)),
+                            )).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            formSubmit();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Colors.deepPurple,
+                                border: Border.all(color: Colors.deepPurple),
+                                borderRadius: BorderRadius.circular(24)),
+                            child: Center(
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                              )
                             ),
-                          ),
-                        ],
-                      ).animate().fadeIn(delay: 750.ms).slideX(begin: .25),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          googleSignIn();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.deepPurple),
-                              borderRadius: BorderRadius.circular(24)),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset('images/social-login-gmail-icon.png'),
-                                SizedBox(
-                                  width: 10,
+                          ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
+                        ),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 32, 0),
+                                child: Divider(
+                                  color: Colors.grey,
                                 ),
-                                Text(
-                                  'Gmail',
-                                  style: TextStyle(
-                                      color: Colors.deepPurple,
-                                      fontFamily:
-                                          GoogleFonts.montserrat().fontFamily,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
-                                )
-                              ]),
-                        ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
-                      ),
-                      SizedBox(
-                        height: 24,
-                      ),
-                    ],
+                              ),
+                            ),
+                            Text(
+                              'Or login with',
+                            ),
+                            const Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(32, 0, 15, 0),
+                                child: Divider(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ).animate().fadeIn(delay: 750.ms).slideX(begin: .25),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            googleSignIn();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.deepPurple),
+                                borderRadius: BorderRadius.circular(24)),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('images/social-login-gmail-icon.png'),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'Gmail',
+                                    style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontFamily:
+                                            GoogleFonts.montserrat().fontFamily,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  )
+                                ]),
+                          ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
+                        ),
+                        SizedBox(
+                          height: 24,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
