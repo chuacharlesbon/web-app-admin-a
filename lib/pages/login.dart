@@ -389,11 +389,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                                 keyboardType: TextInputType.text,
-                                inputFormatters: [
+                                /* inputFormatters: [
                                   FilteringTextInputFormatter.allow(
                                     RegExp(r'^[a-zA-Z ]+$'),
                                   ),
-                                ],
+                                ], */
                                 style: TextStyle(
                                     color: Colors.deepPurple,
                                     fontFamily: GoogleFonts.montserrat().fontFamily,
