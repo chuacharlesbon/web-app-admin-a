@@ -36,3 +36,55 @@ class Language {
     required this.icon,
   });
 }
+
+class Translations {
+  static const submit = {
+    "submit-en": "Submit",
+    "submit-ar": "يُقدِّم",
+  };
+
+  static const fullname = {
+    "name-en": "Enter full name",
+    "name-ar": "أدخل الاسم الكامل"
+  };
+
+  static const mobile = {
+    "mobile-en": "Mobile number",
+    "mobile-ar": "رقم الهاتف المحمول",
+  };
+
+  static const loginOption = {
+    "loginOption-en": "Or Log in with",
+    "loginOption-ar": "أو تسجيل الدخول مع",
+  };
+
+  static const terms = {
+    "terms-en": "Terms of Service",
+    "terms-ar": "شروط الخدمة",
+  };
+
+  static const privacy = {
+    "privacy-en": "Data Privacy",
+    "privacy-ar": "خصوصية البيانات",
+  };
+
+  static const welcomeMsg = {
+    "welcomeMsg-en": "Thank you for using Captive Portal!",
+    "welcomeMsg-ar": "شكرًا لك على استخدام البوابة الأسيرة!",
+  };
+
+  static const visitUs = {
+    "visitUs-en": "Visit us to learn more.",
+    "visitUs-ar": "تفضل بزيارتنا لمعرفة المزيد.",
+  };
+
+  static const languageEn = {
+    "en": "English",
+    "ar": "إنجليزي",
+  };
+
+  static const languageAr = {
+    "en": "Arabic",
+    "ar": "عربي",
+  };
+}

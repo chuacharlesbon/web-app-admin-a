@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:html';
 
 import 'package:captiveportal/components/cp_modal.dart';
 import 'package:captiveportal/components/translations.dart';
+import 'package:captiveportal/cubits/login_cubit.dart';
 import 'package:captiveportal/datasource/create-user.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -25,11 +29,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   var uds = UsersDataSource();
+  late bool hasReferrer;
   String currentFullName = "";
   String currentMobileNumber = "";
 
   void getReferrer() {
-    print('This is the referrer ${document.referrer}');
+    log('This is the referrer ${document.referrer}');
+  }
+
+  void initTranslations() {
+    final loginCubit = GetIt.instance<LoginCubit>();
+    loginCubit.fetchTranslations();
   }
 
   bool isLoading = false;
@@ -96,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try{
       final result = await uds.createUser(fullName: currentFullName, mobileNumber: currentMobileNumber, email: "");
-      print('This is the result ${result.toString()}');
+      log('This is the result ${result.toString()}');
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
         ctx: context,
@@ -144,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }) async {
     try{
       final result = await uds.createUser(fullName: fullName, mobileNumber: "", email: email);
-      print('This is the result ${result.toString()}');
+      log('This is the result ${result.toString()}');
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
         ctx: context,
@@ -193,271 +203,396 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    hasReferrer = document.referrer.trim() != "";
     getReferrer();
+    initTranslations();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     //Size size = MediaQuery.of(context).size;
-    print(currentFullName);
-    print(currentMobileNumber);
+    log(currentFullName);
+    log(currentMobileNumber);
+    final loginCubit = GetIt.instance<LoginCubit>();
     return Scaffold(
+      /* appBar: !hasReferrer
+      ? null
+      : AppBar( */
       appBar: AppBar(
         backgroundColor: Colors.white70,
         elevation: 1,
         actions: [
-          PopupMenuButton<Language>(
-                  onSelected: (value) {
-                    //GetIt.instance<OkadaThemeModeCubit>().changeLanguage(value);
-                    //context.setLocale(Locale(value.code));
-                  },
-                  iconSize: 32,
-                  constraints:
-                      const BoxConstraints(minWidth: 20, maxWidth: 120),
-                  itemBuilder: (context) => Languages.all
-                      .map(
-                        (language) => PopupMenuItem(
-                          value: language,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image(
-                                image: (language.icon as Image).image,
-                                height: 24,
-                                width: 24,
+          BlocBuilder<LoginCubit, LoginState>(
+            bloc: loginCubit,
+            builder: (context, state) {
+              return PopupMenuButton<Language>(
+                      initialValue: loginCubit.state.language,
+                      onSelected: (value) {
+                        loginCubit.updateTranslations(currentCode: value.code);
+                        //GetIt.instance<OkadaThemeModeCubit>().changeLanguage(value);
+                        //context.setLocale(Locale(value.code));
+                      },
+                      iconSize: 64,
+                      constraints:
+                          const BoxConstraints(minWidth: 20, maxWidth: 120),
+                      itemBuilder: (context) => Languages.all
+                          .map(
+                            (language) => PopupMenuItem(
+                              value: language,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  /* Image(
+                                    image: (language.icon as Image).image,
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                  const SizedBox(width: 12), */
+                                  Text(
+                                    (state.language?.code ?? "en") != "en"
+                                      ? language.code == "en"
+                                        ? Translations.languageEn["ar"].toString()
+                                        : Translations.languageAr["ar"].toString()
+                                      : language.code == "en"
+                                        ? Translations.languageEn["en"].toString()
+                                        : Translations.languageAr["en"].toString(),
+                                  )
+                                ],
                               ),
-                              const SizedBox(width: 12),
-                              Text(language.name)
-                            ],
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  icon: Image(
-                          image: (Languages.all[0].icon as Image).image,
-                          height: 24,
-                          width: 24,
-                        ),
-                  /* icon: state.language != null
-                      ? Image(
-                          image: (state.language!.icon as Image).image,
-                          height: 24,
-                          width: 24,
+                            ),
+                          )
+                          .toList(),
+                      icon: Text(
+                        (state.language?.code ?? "en") != "en"
+                          ? Translations.languageAr["ar"].toString()
+                          : Translations.languageEn["en"].toString(),
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14
                         )
-                      : const Icon(Icons.language), */
-                ),
+                      ),
+                      /* icon: state.language != null
+                          ? Image(
+                              image: (state.language!.icon as Image).image,
+                              height: 24,
+                              width: 24,
+                            )
+                          : Image(
+                              image: (Languages.all[0].icon as Image).image,
+                              height: 24,
+                              width: 24,
+                            ), */
+                    );
+            }
+          ),
         ]
       ),
-      body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: NetworkImage(
-                  'https://captive-portal-html-imtg.vercel.app/tekqore.jpg',
-                ),
-                fit: BoxFit.cover)),
-        child: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white.withOpacity(0.75),
-              padding: const EdgeInsets.all(16),
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 320),
+      body: BlocBuilder<LoginCubit, LoginState>(
+        bloc: loginCubit,
+        builder: (context, state) {
+          return Container(
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(
+                      'https://captive-portal-html-imtg.vercel.app/tekqore.jpg',
+                    ),
+                    fit: BoxFit.cover)),
+            child: Stack(
+              children: [
+                if(!hasReferrer)
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.white.withOpacity(0.75),
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.withOpacity(0.75)),
-                      borderRadius: BorderRadius.circular(24)),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 24,
-                        ),
-                        TextFormField(
-                            onChanged: (value) {
-                              setState(() {
-                                currentFullName = value;
-                              });
-                            },
-                            onFieldSubmitted: (value) {
-                              setState(() {
-                                currentFullName = value;
-                              });
-                            },
-                            keyboardType: TextInputType.text,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^[a-zA-Z ]+$'),
-                              ),
-                            ],
+                ),
+                if(!hasReferrer)
+                Align(
+                  //alignment: Alignment.topCenter,
+                  alignment: Alignment.center,
+                  child: Container(
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
+                      constraints: const BoxConstraints(maxWidth: 750, maxHeight: 150),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.withOpacity(0.75)),
+                          borderRadius: BorderRadius.circular(24)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            (state.language?.code ?? "en") != "en"
+                              ? Translations.welcomeMsg['welcomeMsg-ar'].toString()
+                              : Translations.welcomeMsg['welcomeMsg-en'].toString(),
                             style: TextStyle(
-                                color: Colors.deepPurple,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Enter name',
-                              hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: GoogleFonts.montserrat().fontFamily,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.deepPurple)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.deepPurple)),
-                            )).animate().fadeIn(delay: 250.ms).slideX(begin: .25),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        TextFormField(
-                            onChanged: (value) {
-                              setState(() {
-                                currentMobileNumber = value;
-                              });
-                            },
-                            onFieldSubmitted: (value) {
-                              setState(() {
-                                currentMobileNumber = value;
-                              });
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^[0-9]+$'),
-                              ),
-                            ],
-                            style: TextStyle(
-                                color: Colors.deepPurple,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Mobile number',
-                              hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: GoogleFonts.montserrat().fontFamily,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.deepPurple)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide:
-                                      BorderSide(color: Colors.deepPurple)),
-                            )).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
-                        SizedBox(
-                          height: 24,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            formSubmit();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                color: Colors.deepPurple,
-                                border: Border.all(color: Colors.deepPurple),
-                                borderRadius: BorderRadius.circular(24)),
-                            child: Center(
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: GoogleFonts.montserrat().fontFamily,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
-                              )
+                              fontFamily: GoogleFonts.montserrat().fontFamily,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14
                             ),
-                          ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
-                        ),
-                        SizedBox(
-                          height: 24,
-                        ),
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(15, 0, 32, 0),
-                                child: Divider(
-                                  color: Colors.grey,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                            (state.language?.code ?? "en") != "en"
+                              ? Translations.visitUs['visitUs-ar'].toString()
+                              : Translations.visitUs['visitUs-en'].toString(),
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontFamily: GoogleFonts.montserrat().fontFamily,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                    ),
+                ),
+                if(hasReferrer)
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.white.withOpacity(0.75),
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 320),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.withOpacity(0.75)),
+                          borderRadius: BorderRadius.circular(24)),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    currentFullName = value;
+                                  });
+                                },
+                                onFieldSubmitted: (value) {
+                                  setState(() {
+                                    currentFullName = value;
+                                  });
+                                },
+                                keyboardType: TextInputType.text,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[a-zA-Z ]+$'),
+                                  ),
+                                ],
+                                style: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontFamily: GoogleFonts.montserrat().fontFamily,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                                decoration: InputDecoration(
+                                  hintText: (state.language?.code ?? "en") != "en"
+                                      ? Translations.fullname['name-ar'].toString()
+                                      : Translations.fullname['name-en'].toString(),
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      borderSide:
+                                          const BorderSide(color: Colors.deepPurple)),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      borderSide:
+                                          const BorderSide(color: Colors.deepPurple)),
+                                )).animate().fadeIn(delay: 250.ms).slideX(begin: .25),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    currentMobileNumber = value;
+                                  });
+                                },
+                                onFieldSubmitted: (value) {
+                                  setState(() {
+                                    currentMobileNumber = value;
+                                  });
+                                },
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[0-9]+$'),
+                                  ),
+                                ],
+                                style: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontFamily: GoogleFonts.montserrat().fontFamily,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                                decoration: InputDecoration(
+                                  hintText: (state.language?.code ?? "en") != "en"
+                                      ? Translations.mobile['mobile-ar'].toString()
+                                      : Translations.mobile['mobile-en'].toString(),
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      borderSide:
+                                          const BorderSide(color: Colors.deepPurple)),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      borderSide:
+                                          const BorderSide(color: Colors.deepPurple)),
+                                )).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                formSubmit();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: Colors.deepPurple,
+                                    border: Border.all(color: Colors.deepPurple),
+                                    borderRadius: BorderRadius.circular(24)),
+                                child: Center(
+                                  child: Text(
+                                    (state.language?.code ?? "en") != "en"
+                                      ? Translations.submit['submit-ar'].toString()
+                                      : Translations.submit['submit-en'].toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                  )
                                 ),
-                              ),
+                              ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(15, 0, 32, 0),
+                                    child: Divider(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  (state.language?.code ?? "en") != "en"
+                                    ? Translations.loginOption['loginOption-ar'].toString()
+                                    : Translations.loginOption['loginOption-en'].toString(),
+                                ),
+                                const Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(32, 0, 15, 0),
+                                    child: Divider(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ).animate().fadeIn(delay: 750.ms).slideX(begin: .25),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                googleSignIn();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.deepPurple),
+                                    borderRadius: BorderRadius.circular(24)),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset('images/social-login-gmail-icon.png'),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        'Gmail',
+                                        style: TextStyle(
+                                            color: Colors.deepPurple,
+                                            fontFamily:
+                                                GoogleFonts.montserrat().fontFamily,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14),
+                                      )
+                                    ]),
+                              ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
+                            ),
+                            const SizedBox(
+                              height: 24,
                             ),
                             Text(
-                              'Or login with',
-                            ),
-                            const Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(32, 0, 15, 0),
-                                child: Divider(
-                                  color: Colors.grey,
-                                ),
+                              (state.language?.code ?? "en") != "en"
+                                ? Translations.terms['terms-ar'].toString()
+                                : Translations.terms['terms-en'].toString(),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12
                               ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              (state.language?.code ?? "en") != "en"
+                                ? Translations.privacy['privacy-ar'].toString()
+                                : Translations.privacy['privacy-en'].toString(),
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
-                        ).animate().fadeIn(delay: 750.ms).slideX(begin: .25),
-                        SizedBox(
-                          height: 24,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            googleSignIn();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.deepPurple),
-                                borderRadius: BorderRadius.circular(24)),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset('images/social-login-gmail-icon.png'),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    'Gmail',
-                                    style: TextStyle(
-                                        color: Colors.deepPurple,
-                                        fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14),
-                                  )
-                                ]),
-                          ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
-                        ),
-                        SizedBox(
-                          height: 24,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+                if(isLoading)
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.50),
+                  child: const Center(child: CircularProgressIndicator()),
+                )
+              ],
             ),
-            if(isLoading)
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.black.withOpacity(0.50),
-              child: Center(child: CircularProgressIndicator()),
-            )
-          ],
-        ),
+          );
+        }
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

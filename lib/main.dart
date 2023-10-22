@@ -1,5 +1,7 @@
+import 'package:captiveportal/cubits/login_cubit.dart';
 import 'package:captiveportal/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +14,15 @@ void main() {
       routes: MyRoutes.myRoutes,
     ),
   );
+  serviceLocator.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(
+      aOptions: AndroidOptions(
+        encryptedSharedPreferences: true,
+      ),
+      iOptions: IOSOptions.defaultOptions,
+    ),
+  );
+  serviceLocator.registerLazySingleton<LoginCubit>(() => LoginCubit());
   runApp(const MyApp());
 }
 
