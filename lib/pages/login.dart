@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required String email,
   }) async {
     try{
-      final result = await uds.createUser(fullName: fullName, mobileNumber: mobileNumber, email: email);
+      final result = await uds.createUser(fullName: fullName, mobileNumber: "", email: email);
       print('This is the result ${result.toString()}');
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               currentFullName = value;
                             });
                           },
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.text,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
                               RegExp(r'^[a-zA-Z ]+$'),
