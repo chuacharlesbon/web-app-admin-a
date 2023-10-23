@@ -8,7 +8,7 @@ class UsersDataSource {
       "Content-Type": "application/json",
     },
   );
-  final String serverUrl = 'http://localhost:3000/api/tekqore';
+  final String serverUrl = 'https://captive-portal-server.vercel.app/api/tekqore';
   
   Future<dynamic> createUser({
     required String fullName,
