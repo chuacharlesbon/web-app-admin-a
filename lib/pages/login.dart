@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var uds = UsersDataSource();
   late bool hasReferrer;
+  late String currentReferrer;
   String currentFullName = "";
   String currentMobileNumber = "";
 
@@ -105,11 +106,12 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
     try{
-      final result = await uds.createUser(fullName: currentFullName, mobileNumber: currentMobileNumber, email: "");
+      final result = await uds.createUser(fullName: currentFullName, mobileNumber: currentMobileNumber, email: "", referrer: currentReferrer);
       log('This is the result ${result.toString()}');
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
         ctx: context,
+        statusCode: "200",
         message: result['error'] != null
           ? 'ERR ${result['error']}'
           : "Form submitted."
@@ -123,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // ignore: use_build_context_synchronously
         MyModal.genericOnFuncModal(
           ctx: context,
+          statusCode: "400",
           message: 'ERR: ${e.response?.data['error']}'
         );
       } else {
@@ -131,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // ignore: use_build_context_synchronously
         MyModal.genericOnFuncModal(
           ctx: context,
+          statusCode: "400",
           message: 'ERR ${e.message}'
         );
       }
@@ -139,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
         ctx: context,
+        statusCode: "400",
         message: 'ERR ${e.toString()}'
       );
     }
@@ -153,11 +158,12 @@ class _LoginScreenState extends State<LoginScreen> {
     required String email,
   }) async {
     try{
-      final result = await uds.createUser(fullName: fullName, mobileNumber: "", email: email);
+      final result = await uds.createUser(fullName: fullName, mobileNumber: "", email: email, referrer: currentReferrer);
       log('This is the result ${result.toString()}');
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
         ctx: context,
+        statusCode: "200",
         message: result['error'] != null
           ? 'ERR ${result['error']}'
           : "Form submitted."
@@ -171,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // ignore: use_build_context_synchronously
         MyModal.genericOnFuncModal(
           ctx: context,
+          statusCode: "400",
           message: 'ERR: ${e.response?.data['error']}'
         );
       } else {
@@ -179,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // ignore: use_build_context_synchronously
         MyModal.genericOnFuncModal(
           ctx: context,
+          statusCode: "400",
           message: 'ERR ${e.message}'
         );
       }
@@ -187,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // ignore: use_build_context_synchronously
       MyModal.genericOnFuncModal(
         ctx: context,
+        statusCode: "400",
         message: 'ERR ${e.toString()}'
       );
     }
@@ -204,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     hasReferrer = document.referrer.trim() != "";
+    currentReferrer = document.referrer.trim() != "" ? document.referrer.trim() : "null";
     getReferrer();
     initTranslations();
     super.initState();

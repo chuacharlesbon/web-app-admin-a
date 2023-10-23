@@ -8,18 +8,20 @@ class UsersDataSource {
       "Content-Type": "application/json",
     },
   );
-  final String serverUrl = 'https://captive-portal-server.vercel.app/api/tekqore';
+  final String serverUrl = 'http://localhost:3000/api/tekqore';
   
   Future<dynamic> createUser({
     required String fullName,
     required String mobileNumber,
     required String email,
+    required String referrer,
   }) async {
     dynamic result;
     print({
       "fullName": fullName,
       "mobileNumber": mobileNumber,
-      "email": email
+      "email": email,
+      "referrer": referrer
     });
     try {
       Response response = await dio.post(
@@ -27,7 +29,8 @@ class UsersDataSource {
         data: {
             "fullName": fullName,
             "mobileNumber": mobileNumber,
-            "email": email
+            "email": email,
+            "referrer": referrer
         },
       );
       result = response.data;

@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,8 +9,11 @@ class MyModal {
   static void genericOnFuncModal({
     required BuildContext ctx,
     required String message,
+    required String statusCode
   }) {
+    log(statusCode);
     showDialog(
+      barrierDismissible: false,
       context: ctx,
       builder: (BuildContext _) {
         return StatefulBuilder(
@@ -38,8 +44,11 @@ class MyModal {
               ),
               actions: [
                 GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(_, true);
+                      if(statusCode == "200"){
+                        html.window.close();
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(12),
