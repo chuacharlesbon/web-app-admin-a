@@ -5,15 +5,31 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_strategy/url_strategy.dart';
 
-void main() {
-  final serviceLocator = GetIt.instance;
+final serviceLocator = GetIt.instance;
+
+void initializeRoutes() {
+  serviceLocator.registerLazySingleton<RouteBase>(
+    instanceName: 'all-routes',
+    () => ShellRoute(
+      pageBuilder: (context, state, child) => NoTransitionPage(
+        child: child,
+      ),
+      routes: MyRoutes.myRoutes
+    )
+  );
   serviceLocator.registerLazySingleton<GoRouter>(
     () => GoRouter(
       initialLocation: '/',
-      routes: MyRoutes.myRoutes,
+      routes: [
+        serviceLocator<RouteBase>(instanceName: 'all-routes'),
+      ],
     ),
   );
+}
+
+void initializeData() {
   serviceLocator.registerLazySingleton<FlutterSecureStorage>(
     () => const FlutterSecureStorage(
       aOptions: AndroidOptions(
@@ -23,6 +39,15 @@ void main() {
     ),
   );
   serviceLocator.registerLazySingleton<LoginCubit>(() => LoginCubit());
+}
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Here we set the URL strategy for our web app.
+  // This will remove /#/
+  setPathUrlStrategy();
+  initializeRoutes();
+  initializeData();
   runApp(const MyApp());
 }
 
@@ -32,34 +57,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Captive Portal | Connect',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
           fontFamily: GoogleFonts.montserrat().fontFamily),
-      home: const MyHomePage(title: 'Captive Portal | Connect'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    final serviceLocator = GetIt.instance;
-    return MaterialApp.router(
-      title: 'Captive Portal | Connect',
-      routerConfig: serviceLocator<GoRouter>(), //_router,
+      routerConfig: serviceLocator<GoRouter>(),
     );
   }
 }
