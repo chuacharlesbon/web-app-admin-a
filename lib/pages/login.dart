@@ -226,80 +226,6 @@ class _LoginScreenState extends State<LoginScreen> {
     log(currentMobileNumber);
     final loginCubit = GetIt.instance<LoginCubit>();
     return Scaffold(
-      /* appBar: !hasReferrer
-      ? null
-      : AppBar( */
-      appBar: AppBar(
-        backgroundColor: Colors.white70,
-        elevation: 1,
-        actions: [
-          BlocBuilder<LoginCubit, LoginState>(
-            bloc: loginCubit,
-            builder: (context, state) {
-              return PopupMenuButton<Language>(
-                      initialValue: loginCubit.state.language,
-                      onSelected: (value) {
-                        loginCubit.updateTranslations(currentCode: value.code);
-                        //GetIt.instance<OkadaThemeModeCubit>().changeLanguage(value);
-                        //context.setLocale(Locale(value.code));
-                      },
-                      iconSize: 64,
-                      constraints:
-                          const BoxConstraints(minWidth: 20, maxWidth: 120),
-                      itemBuilder: (context) => Languages.all
-                          .map(
-                            (language) => PopupMenuItem(
-                              value: language,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  /* Image(
-                                    image: (language.icon as Image).image,
-                                    height: 24,
-                                    width: 24,
-                                  ),
-                                  const SizedBox(width: 12), */
-                                  Text(
-                                    (state.language?.code ?? "en") != "en"
-                                      ? language.code == "en"
-                                        ? Translations.languageEn["ar"].toString()
-                                        : Translations.languageAr["ar"].toString()
-                                      : language.code == "en"
-                                        ? Translations.languageEn["en"].toString()
-                                        : Translations.languageAr["en"].toString(),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      icon: Text(
-                        (state.language?.code ?? "en") != "en"
-                          ? Translations.languageAr["ar"].toString()
-                          : Translations.languageEn["en"].toString(),
-                        style: TextStyle(
-                          color: Colors.deepPurple,
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14
-                        )
-                      ),
-                      /* icon: state.language != null
-                          ? Image(
-                              image: (state.language!.icon as Image).image,
-                              height: 24,
-                              width: 24,
-                            )
-                          : Image(
-                              image: (Languages.all[0].icon as Image).image,
-                              height: 24,
-                              width: 24,
-                            ), */
-                    );
-            }
-          ),
-        ]
-      ),
       body: BlocBuilder<LoginCubit, LoginState>(
         bloc: loginCubit,
         builder: (context, state) {
@@ -312,60 +238,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     fit: BoxFit.cover)),
             child: Stack(
               children: [
-                if(!hasReferrer)
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.white.withOpacity(0.75),
-                  padding: const EdgeInsets.all(16),
-                ),
-                if(!hasReferrer)
-                Align(
-                  //alignment: Alignment.topCenter,
-                  alignment: Alignment.center,
-                  child: Container(
-                      margin: const EdgeInsets.all(16),
-                      padding: const EdgeInsets.all(16),
-                      constraints: const BoxConstraints(maxWidth: 750, maxHeight: 150),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey.withOpacity(0.75)),
-                          borderRadius: BorderRadius.circular(24)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            (state.language?.code ?? "en") != "en"
-                              ? Translations.welcomeMsg['welcomeMsg-ar'].toString()
-                              : Translations.welcomeMsg['welcomeMsg-en'].toString(),
-                            style: TextStyle(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            (state.language?.code ?? "en") != "en"
-                              ? Translations.visitUs['visitUs-ar'].toString()
-                              : Translations.visitUs['visitUs-en'].toString(),
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      )
-                    ),
-                ),
-                if(hasReferrer)
                 Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -475,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                formSubmit();
+                                // formSubmit();
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(8),
@@ -499,92 +371,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(
                               height: 24,
-                            ),
-                            Row(
-                              children: [
-                                const Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(15, 0, 32, 0),
-                                    child: Divider(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  (state.language?.code ?? "en") != "en"
-                                    ? Translations.loginOption['loginOption-ar'].toString()
-                                    : Translations.loginOption['loginOption-en'].toString(),
-                                ),
-                                const Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(32, 0, 15, 0),
-                                    child: Divider(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ).animate().fadeIn(delay: 750.ms).slideX(begin: .25),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                googleSignIn();
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.deepPurple),
-                                    borderRadius: BorderRadius.circular(24)),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset('images/social-login-gmail-icon.png'),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Gmail',
-                                        style: TextStyle(
-                                            color: Colors.deepPurple,
-                                            fontFamily:
-                                                GoogleFonts.montserrat().fontFamily,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14),
-                                      )
-                                    ]),
-                              ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Text(
-                              (state.language?.code ?? "en") != "en"
-                                ? Translations.terms['terms-ar'].toString()
-                                : Translations.terms['terms-en'].toString(),
-                              style: TextStyle(
-                                color: Colors.blueAccent,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            Text(
-                              (state.language?.code ?? "en") != "en"
-                                ? Translations.privacy['privacy-ar'].toString()
-                                : Translations.privacy['privacy-en'].toString(),
-                              style: TextStyle(
-                                color: Colors.blueAccent,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12
-                              ),
-                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
