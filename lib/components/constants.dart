@@ -43,11 +43,22 @@ class RouteNames {
     name: "dashboard",
     path: "/admin/dashboard",
   );
-  static MyRouteModel content = MyRouteModel(
-    name: "content",
-    path: "/admin/content",
+  static MyRouteModel content1 = MyRouteModel(
+    name: "content1",
+    path: "/admin/content1",
   );
-
+  static MyRouteModel content2 = MyRouteModel(
+    name: "content2",
+    path: "/admin/content2",
+  );
+  static MyRouteModel content3 = MyRouteModel(
+    name: "content3",
+    path: "/admin/content3",
+  );
+  static MyRouteModel content4 = MyRouteModel(
+    name: "content4",
+    path: "/admin/content4",
+  );
 }
 
 class ListItems {
@@ -58,24 +69,24 @@ class ListItems {
       path: RouteNames.dashboard.path,
     ),
     DrawerItemModel(
-      nameEN: "Content Management",
-      nameAR: "Content Management (AR)",
-      path: RouteNames.content.path,
+      nameEN: "Content Management 1",
+      nameAR: "Content Management 1 (AR)",
+      path: RouteNames.content1.path,
     ),
     DrawerItemModel(
-      nameEN: "Languages",
-      nameAR: "Languages (AR)",
-      path: RouteNames.dashboard.path,
+      nameEN: "Content Management 2",
+      nameAR: "Content Management 2 (AR)",
+      path: RouteNames.content2.path,
     ),
     DrawerItemModel(
-      nameEN: "Portal Customization",
-      nameAR: "Portal Customization (AR)",
-      path: RouteNames.dashboard.path,
+      nameEN: "Content Management 3",
+      nameAR: "Content Management 3 (AR)",
+      path: RouteNames.content3.path,
     ),
     DrawerItemModel(
-      nameEN: "Themes",
-      nameAR: "Themes (AR)",
-      path: RouteNames.dashboard.path,
+      nameEN: "Content Management 4",
+      nameAR: "Content Management 4 (AR)",
+      path: RouteNames.content4.path,
     ),
   ];
 }

@@ -50,11 +50,38 @@ class MyRoutes {
           ),
         ),
         GoRoute(
-          path: 'content',
-          name: RouteNames.content.name,
+          path: 'content1',
+          name: RouteNames.content1.name,
           builder: (context, state) => const SafeArea(
             child: Scaffold(
-              body: ContentPage(title: "Content"),
+              body: ContentPage(title: "Content Management 1"),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: 'content2',
+          name: RouteNames.content2.name,
+          builder: (context, state) => const SafeArea(
+            child: Scaffold(
+              body: ContentPage(title: "Content Management 2"),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: 'content3',
+          name: RouteNames.content3.name,
+          builder: (context, state) => const SafeArea(
+            child: Scaffold(
+              body: ContentPage(title: "Content Management 3"),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: 'content4',
+          name: RouteNames.content4.name,
+          builder: (context, state) => const SafeArea(
+            child: Scaffold(
+              body: ContentPage(title: "Content Management 4"),
             ),
           ),
         ),

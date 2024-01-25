@@ -18,7 +18,7 @@ class ContentPage extends StatefulWidget {
 
 class _ContentPageState extends State<ContentPage> {
   void initData() {
-    log("Initialize Auth screen");
+    log("Initialize ${widget.title} screen");
   }
 
   @override
@@ -38,7 +38,7 @@ class _ContentPageState extends State<ContentPage> {
     return Scaffold(
       body: Row(
         children: [
-          const DrawerAdmin(),
+          DrawerAdmin(title: widget.title),
           Expanded(
             child: Container(
                 width: double.infinity,
@@ -48,7 +48,7 @@ class _ContentPageState extends State<ContentPage> {
                   onTap: () {
                     //GetIt.instance<GoRouter>().goNamed(RouteNames.login.name);
                   },
-                  child: const Text('Content'),
+                  child: Text(widget.title ?? "Content"),
                 )),
           )
         ],
