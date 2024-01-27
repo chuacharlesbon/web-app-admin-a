@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:captiveportal/components/constants.dart';
+import 'package:captiveportal/components/widgets/buttons.dart';
+import 'package:captiveportal/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -39,6 +41,33 @@ class _MyDrawerAdminState extends State<DrawerAdmin> {
     required String route,
     required String label,
   }) {
+    return MyFilledButton(
+      // buttonText: label,
+      buttonChild: Expanded(
+        child: Text(
+          label,
+          style: MyTheme.textbody16(
+            color: widget.title == label
+                ? Colors.blue
+                : Colors.white
+          )
+        ),
+      ),
+      onPressed: () {
+        GetIt.instance<GoRouter>().go(route);
+      },
+      mainAxisAlignment: MainAxisAlignment.start,
+      buttonStyle: MyTheme.buttonStyleTypeA(
+        padding: const EdgeInsets.symmetric(
+          vertical: 24,
+          horizontal: 12
+        ),
+        color: widget.title == label
+            ? Colors.white
+            : Colors.transparent,
+        isRounded: false
+      ),
+    );
     return Container(
       color: widget.title == label ? Colors.white : null,
       width: double.infinity,
@@ -89,7 +118,30 @@ class _MyDrawerAdminState extends State<DrawerAdmin> {
           ...drawerValues.map((item) => drawerButton(
             label: item.nameEN,
             route: item.path
-          ))
+          )),
+          MyFilledButton(
+            // buttonText: label,
+            buttonChild: Expanded(
+              child: Text(
+                "LOG OUT",
+                style: MyTheme.textbody16(
+                  color: Colors.white
+                )
+              ),
+            ),
+            onPressed: () {
+              GetIt.instance<GoRouter>().goNamed(RouteNames.login.name);
+            },
+            mainAxisAlignment: MainAxisAlignment.start,
+            buttonStyle: MyTheme.buttonStyleTypeA(
+              padding: const EdgeInsets.symmetric(
+                vertical: 24,
+                horizontal: 12
+              ),
+              color: Colors.transparent,
+              isRounded: false
+            ),
+          )
         ],
       )
     );

@@ -5,8 +5,11 @@ import 'dart:html';
 import 'package:captiveportal/components/constants.dart';
 import 'package:captiveportal/components/cp_modal.dart';
 import 'package:captiveportal/components/translations.dart';
+import 'package:captiveportal/components/widgets/buttons.dart';
+import 'package:captiveportal/components/widgets/form_fields.dart';
 import 'package:captiveportal/cubits/login_cubit.dart';
 import 'package:captiveportal/datasource/create-user.dart';
+import 'package:captiveportal/utils/theme.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -215,7 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(
                               height: 24,
                             ),
-                            TextFormField(
+                            MyFormField(
+                                hintText: "Email or username",
                                 onChanged: (value) {
                                   setState(() {
                                     currentFullName = value;
@@ -232,31 +236,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     RegExp(r'^[a-zA-Z ]+$'),
                                   ),
                                 ], */
-                                style: TextStyle(
-                                    color: Colors.deepPurple,
-                                    fontFamily: GoogleFonts.montserrat().fontFamily,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                                decoration: InputDecoration(
-                                  hintText: "Email or username",
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontFamily: GoogleFonts.montserrat().fontFamily,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      borderSide:
-                                          const BorderSide(color: Colors.deepPurple)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      borderSide:
-                                          const BorderSide(color: Colors.deepPurple)),
-                                )).animate().fadeIn(delay: 250.ms).slideX(begin: .25),
+                            ).animate().fadeIn(delay: 250.ms).slideX(begin: .25),
                             const SizedBox(
                               height: 12,
                             ),
-                            TextFormField(
+                            MyFormField(
+                                hintText: "Password",
                                 onChanged: (value) {
                                   setState(() {
                                     currentMobileNumber = value;
@@ -273,53 +258,46 @@ class _LoginScreenState extends State<LoginScreen> {
                                     RegExp(r'^[0-9]+$'),
                                   ),
                                 ],
-                                style: TextStyle(
-                                    color: Colors.deepPurple,
-                                    fontFamily: GoogleFonts.montserrat().fontFamily,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                                decoration: InputDecoration(
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontFamily: GoogleFonts.montserrat().fontFamily,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      borderSide:
-                                          const BorderSide(color: Colors.deepPurple)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      borderSide:
-                                          const BorderSide(color: Colors.deepPurple)),
-                                )).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
+                            ).animate().fadeIn(delay: 500.ms).slideX(begin: .25),
                             const SizedBox(
                               height: 24,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                // formSubmit();
+                            MyFilledButton(
+                              buttonText: "LOGIN",
+                              onPressed: () {
                                 GetIt.instance<GoRouter>().goNamed(RouteNames.dashboard.name);
                               },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                    color: Colors.deepPurple,
-                                    border: Border.all(color: Colors.deepPurple),
-                                    borderRadius: BorderRadius.circular(24)),
-                                child: Center(
-                                  child: Text(
-                                    "LOGIN",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: GoogleFonts.montserrat().fontFamily,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
-                                  )
+                              buttonStyle: MyTheme.buttonStyleTypeA(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 24,
+                                  horizontal: 12
                                 ),
-                              ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
-                            ),
+                                isRounded: true
+                              ),
+                            ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     // formSubmit();
+                            //     GetIt.instance<GoRouter>().goNamed(RouteNames.dashboard.name);
+                            //   },
+                            //   child: Container(
+                            //     padding: const EdgeInsets.all(8),
+                            //     decoration: BoxDecoration(
+                            //         color: Colors.deepPurple,
+                            //         border: Border.all(color: Colors.deepPurple),
+                            //         borderRadius: BorderRadius.circular(24)),
+                            //     child: Center(
+                            //       child: Text(
+                            //         "LOGIN",
+                            //         style: TextStyle(
+                            //           color: Colors.white,
+                            //           fontFamily: GoogleFonts.montserrat().fontFamily,
+                            //           fontWeight: FontWeight.bold,
+                            //           fontSize: 14),
+                            //       )
+                            //     ),
+                            //   ).animate().fadeIn(delay: 1000.ms).slideX(begin: .25),
+                            // ),
                             const SizedBox(
                               height: 24,
                             ),
